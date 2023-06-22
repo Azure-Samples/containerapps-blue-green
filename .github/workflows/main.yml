@@ -1,0 +1,64 @@
+on:
+  push:
+    branches:
+      - main
+name: Blue-Green Deployment
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+    # Checkout code
+    - uses: actions/checkout@main
+
+      # Login into Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # Set params based on the existing app deployment
+    - name: Set params
+      id: params
+      env:
+        GITHUB_OUTPUT: ${{ github.workspace }}/output.txt
+        GITHUB_SHA: ${{ github.sha }}
+        RESOURCE_GROUP: ${{ secrets.AZURE_RG }}
+        APP_NAME: ${{ secrets.AZURE_APP_NAME }}
+      run: ./infra/set-params.sh
+      shell: bash
+
+    # Deploy current commit id to a non-production label so it can be tested
+    - name: Deploy current release
+      id: deploy
+      uses: azure/arm-deploy@v1
+      with:
+        resourceGroupName: ${{ secrets.AZURE_RG }}
+        template: infra/main.bicep
+        deploymentName: deploy-${{ steps.params.outputs.commit_id }}
+        parameters: 'appName=${{ secrets.AZURE_APP_NAME }} blueCommitId=${{ steps.params.outputs.blue_commit_id }} greenCommitId=${{ steps.params.outputs.green_commit_id }} latestCommitId=${{ steps.params.outputs.commit_id }} productionLabel=${{ steps.params.outputs.cur_prod_label }} containerAppsEnvironmentName=${{ secrets.AZURE_ENVIRONMENT_NAME }}'
+        deploymentMode: Incremental
+        failOnStdErr: true
+
+    # Test current release - in a real workflow this would run a test suite against a non-production label ${{ steps.params.outputs.new_prod_label }}
+    - name: Test current release
+      id: test
+      run: sleep 30s
+
+    # Switch production label to the current release
+    - name: swtich production label
+      id: switch_prod_label
+      uses: azure/arm-deploy@v1
+      with:
+        resourceGroupName: ${{ secrets.AZURE_RG }}
+        template: infra/main.bicep
+        deploymentName: set-prod-label-${{ steps.params.outputs.commit_id }}
+        parameters: 'appName=${{ secrets.AZURE_APP_NAME }} blueCommitId=${{ steps.params.outputs.blue_commit_id }} greenCommitId=${{ steps.params.outputs.green_commit_id }} latestCommitId=${{ steps.params.outputs.commit_id }} productionLabel=${{ steps.params.outputs.new_prod_label }} containerAppsEnvironmentName=${{ secrets.AZURE_ENVIRONMENT_NAME }}'
+        deploymentMode: Incremental
+        failOnStdErr: true
+
+    # Deactivate the revision that is not green or blue anymore
+    - name: Deactivate unused revision
+      id: deactivate
+      run: |
+        [[ '${{ steps.params.outputs.revision_to_deactivate }}' != 'NONE' ]] && az containerapp revision deactivate --name ${{ secrets.AZURE_APP_NAME }} --resource-group ${{ secrets.AZURE_RG }} --revision ${{ steps.params.outputs.revision_to_deactivate }} || echo "No revision to deactivate"
+      shell: bash
