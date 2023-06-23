@@ -79,6 +79,8 @@ resource blueGreenDeploymentApp 'Microsoft.App/containerApps@2022-11-01-preview'
       revisionSuffix: currentCommitId
       containers:[
         {
+          // in the real deployment the image would reference the actual commit id tag, for example:
+          // image: 'k8seteste2e.azurecr.io/e2e-apps/test-app:${currentCommitId}'
           image: 'k8seteste2e.azurecr.io/e2e-apps/test-app:latest'
           name: appName
           resources: {
