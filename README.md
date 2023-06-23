@@ -61,20 +61,6 @@ az deployment group create \
 
 ## Demo
 
-A demo app is included to show how to use the project.
+Make any commit to your fork of the repo and check the github actions workflow run. The workflow will deploy a new revision of the app and switch the traffic to it. An example workflow run would look as shown below:
 
-To run the demo, follow these steps:
-
-(Add steps to start up the demo)
-
-1.
-2.
-3.
-
-## Resources
-
-(Any additional resources or related projects)
-
-- Link to supporting information
-- Link to similar sample
-- ...
+![workflow run](./docs/example-workflow.png)
