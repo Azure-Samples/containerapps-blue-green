@@ -42,7 +42,12 @@ jobs:
     # Test current release - in a real workflow this would run a test suite against a non-production label ${{ steps.params.outputs.new_prod_label }}
     - name: Test current release
       id: test
-      run: sleep 30s
+      run: |
+        result=$(curl -s https://${{ secrets.AZURE_APP_NAME }}--${{ steps.params.outputs.new_prod_label }}.${{ secrets.AZURE_APP_DNSSUFFIX}}/api/env | jq -r '.env.REVISION_COMMIT_ID')
+        if [[ $result != ${{ steps.params.outputs.commit_id }} ]]; then
+          echo "Test failed"
+          exit 1
+        fi
 
     # Switch production label to the current release
     - name: swtich production label
