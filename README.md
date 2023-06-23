@@ -11,7 +11,7 @@ In the context of Azure Container Apps, the blue/green deployment release approa
 The sample demonstrates the following:
 
 * How to use github actions to build and deploy container apps revisions with Azure Bicep template
-* How to to switch the traffic between container blue/green revisions
+* How to to switch the traffic between blue/green revisions
 * How to iterate between blue/green revisions during deployment cycles
 * How to make the github workflow idempotent so that it can be re-run for the same commit without causing any issues
 * How to prevent accumulation of unused active revisions when deploying frequently
@@ -32,10 +32,10 @@ To install the sample, you will need to fork the repository and then add the fol
 - `AZURE_ENVIRONMENT_NAME` - the short name of the existing Azure Container Apps environment where the sample app will be deployed to, for example `mycontainerappenv`. Do not use the full environment ARM resource id.
 - `AZURE_RG` - the name of the existing Azure resource group where the sample app will be deployed to.
 - `AZURE_APP_NAME` - the name of the containerapp where the sample app will be deployed to.
-- `AZURE_APP_DNSSUFFIX` - the default domain of the containerapp environment where the sample app will be deployed to. You can use this command to get it 
+- `AZURE_APP_DNSSUFFIX` - the default domain of the containerapp environment where the sample app will be deployed to. You can use this command to get it:
 
 ```bash
-az containerapp env show -g $RESOURCE_GROUP -n $APP_ENVIRONMENT_NAME --query properties.defaultDomain`
+az containerapp env show -g $RESOURCE_GROUP -n $APP_ENVIRONMENT_NAME --query properties.defaultDomain
 ```
 
 Next you will need to create a container app by running this command:
@@ -61,6 +61,6 @@ az deployment group create \
 
 ## Demo
 
-Make any commit to your fork of the repo and check the github actions workflow run. The workflow will deploy a new revision of the app and switch the traffic to it. An example workflow run would look as shown below:
+Push any commit to the `main` branch of your fork of the repo and check the github actions workflow run. The workflow will deploy a new revision of the app and switch the traffic to it. An example workflow run would look as shown below:
 
 ![workflow run](./docs/example-workflow.png)
