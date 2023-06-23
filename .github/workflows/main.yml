@@ -43,7 +43,7 @@ jobs:
     - name: Test current release
       id: test
       run: |
-        result=$(curl -s https://${{ secrets.AZURE_APP_NAME }}--${{ steps.params.outputs.new_prod_label }}.${{ secrets.AZURE_APP_DNSSUFFIX}}/api/env | jq -r '.env.REVISION_COMMIT_ID')
+        result=$(curl -s https://${{ secrets.AZURE_APP_NAME }}---${{ steps.params.outputs.new_prod_label }}.${{ secrets.AZURE_APP_DNSSUFFIX}}/api/env | jq -r '.env.REVISION_COMMIT_ID')
         if [[ $result != ${{ steps.params.outputs.commit_id }} ]]; then
           echo "Test failed"
           exit 1
