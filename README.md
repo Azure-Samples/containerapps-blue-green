@@ -1,10 +1,10 @@
 # ContainerApps Blue/Green
 
-This is a sample project to demonstrate how to implement blue/green deployment CI workflow for container apps. 
+This is a sample project to demonstrate how to implement blue/green deployment CI workflow for container apps.
 
 [Blue/Green Deployment](https://martinfowler.com/bliki/BlueGreenDeployment.html) is a software release strategy that aims to minimize downtime and reduce the risk associated with deploying new versions of an application. In a blue/green deployment, two identical environments, referred to as "blue" and "green," are set up. One environment (blue) is running the current application version and one environment (green) is running the new application version. Once testing has been completed in the green environment, the live application traffic is directed to the green environment and the blue environment can be used to deploy new application version during next deployment cycle.
 
-In the context of Azure Container Apps, the blue/green deployment release approach is enabled by using [container apps revisions](https://learn.microsoft.com/en-us/azure/container-apps/revisions), [traffic weights](https://learn.microsoft.com/en-us/azure/container-apps/traffic-splitting), and [revision labels](https://learn.microsoft.com/en-us/azure/container-apps/revisions#revision-labels). 
+In the context of Azure Container Apps, the blue/green deployment release approach is enabled by using [container apps revisions](https://learn.microsoft.com/en-us/azure/container-apps/revisions), [traffic weights](https://learn.microsoft.com/en-us/azure/container-apps/traffic-splitting), and [revision labels](https://learn.microsoft.com/en-us/azure/container-apps/revisions#revision-labels).
 
 ## Features
 
@@ -20,19 +20,19 @@ The sample demonstrates the following:
 
 ### Prerequisites
 
-- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
-- [Azure Container Apps CLI](https://docs.microsoft.com/en-us/azure/container-apps/quickstart-cli).
-- An existing [Azure Container App Environment](https://learn.microsoft.com/en-us/azure/container-apps/environment) where the sample app will be deployed to.
+* [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
+* [Azure Container Apps CLI](https://docs.microsoft.com/en-us/azure/container-apps/quickstart-cli).
+* An existing [Azure Container App Environment](https://learn.microsoft.com/en-us/azure/container-apps/environment) where the sample app will be deployed to.
 
 ### Installation
 
 To install the sample, you will need to fork the repository and then add the following [github action secrets](https://github.com/Azure/actions-workflow-samples/blob/master/assets/create-secrets-for-GitHub-workflows.md):
 
-- `AZURE_CREDENTIALS` - Azure service principal credentials with permissions to create and manage resources in your subscription and resource group. Refer to [Azure login action with a service principal secret](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#use-the-azure-login-action-with-a-service-principal-secret).
-- `AZURE_ENVIRONMENT_NAME` - the short name of the existing Azure Container Apps environment where the sample app will be deployed to, for example `mycontainerappenv`. Do not use the full environment ARM resource id.
-- `AZURE_RG` - the name of the existing Azure resource group where the sample app will be deployed to.
-- `AZURE_APP_NAME` - the name of the containerapp where the sample app will be deployed to.
-- `AZURE_APP_DNSSUFFIX` - the default domain of the containerapp environment where the sample app will be deployed to. You can use this command to get it:
+* `AZURE_CREDENTIALS` - Azure service principal credentials with permissions to create and manage resources in your subscription and resource group. Refer to [Azure login action with a service principal secret](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#use-the-azure-login-action-with-a-service-principal-secret).
+* `AZURE_ENVIRONMENT_NAME` - the short name of the existing Azure Container Apps environment where the sample app will be deployed to, for example `mycontainerappenv`. Do not use the full environment ARM resource id.
+* `AZURE_RG` - the name of the existing Azure resource group where the sample app will be deployed to.
+* `AZURE_APP_NAME` - the name of the containerapp where the sample app will be deployed to.
+* `AZURE_APP_DNSSUFFIX` - the default domain of the containerapp environment where the sample app will be deployed to, for example `whitedesert-078f44c6.eastus.azurecontainerapps.io`. You can use this command to get it:
 
 ```bash
 az containerapp env show -g $RESOURCE_GROUP -n $APP_ENVIRONMENT_NAME --query properties.defaultDomain
