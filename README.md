@@ -61,6 +61,8 @@ az deployment group create \
 
 ## Demo
 
-Push any commit to the `main` branch of your fork of the repo and check the github actions workflow run. The workflow will deploy a new revision of the app and switch the traffic to it. An example workflow run would look as shown below:
+Check the [github workflow](https://github.com/Azure-Samples/containerapps-blue-green/actions) for this repo.
+
+If using your own fork - push any commit to the `main` branch and check the github actions workflow run. The workflow will deploy a new revision of the app and switch the traffic to it. An example workflow run would look as shown below:
 
 ![workflow run](./docs/example-workflow.png)
